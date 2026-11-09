@@ -1,0 +1,63 @@
+<!-- ===== TRANG CHỦ ===== -->
+
+<!-- Banner lớn -->
+<div class="p-5 mb-4 bg-dark text-white rounded-3 text-center">
+  <h1 class="display-5 fw-bold">Thời Trang Mới Nhất 2024</h1>
+  <p class="lead">Khám phá bộ sưu tập mùa hè với hàng ngàn mẫu mã độc đáo</p>
+  <a href="/shop" class="btn btn-light btn-lg">Mua ngay →</a>
+</div>
+
+<!-- Danh mục nổi bật -->
+<section class="mb-5">
+  <h4 class="mb-3">Danh mục</h4>
+  <div class="row g-3">
+    <!-- Lặp qua danh sách danh mục -->
+    <% if (categories && categories.length > 0) { %>
+      <% categories.forEach(cat => { %>
+        <div class="col-6 col-md-3">
+          <a href="/shop?category=<%= cat._id %>" class="card text-dark text-decoration-none h-100 text-center p-3">
+            <div class="card-body">
+              <i class="bi bi-bag fs-1"></i>
+              <p class="mt-2 mb-0 fw-semibold"><%= cat.name %></p>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <!-- Hiện placeholder nếu chưa có dữ liệu -->
+      <% ['Áo', 'Quần', 'Váy', 'Phụ kiện'].forEach(name => { %>
+        <div class="col-6 col-md-3">
+          <div class="card text-center p-3">
+            <i class="bi bi-bag fs-1"></i>
+            <p class="mt-2 mb-0 fw-semibold"><%= name %></p>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<!-- Sản phẩm nổi bật -->
+<section>
+  <h4 class="mb-3">Sản phẩm nổi bật</h4>
+  <div class="row g-3">
+    <% if (featuredProducts && featuredProducts.length > 0) { %>
+      <% featuredProducts.forEach(product => { %>
+        <div class="col-6 col-md-3">
+          <div class="card h-100">
+            <!-- Ảnh sản phẩm -->
+            <img src="<%= product.image || '/images/no-image.png' %>" class="card-img-top" alt="<%= product.name %>" style="height:200px; object-fit:cover;">
+            <div class="card-body">
+              <h6 class="card-title"><%= product.name %></h6>
+              <p class="text-danger fw-bold"><%= product.price.toLocaleString('vi-VN') %>đ</p>
+              <a href="/product/<%= product._id %>" class="btn btn-dark btn-sm w-100">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-muted">Chưa có sản phẩm nào.</p>
+    <% } %>
+  </div>
+</section>
+

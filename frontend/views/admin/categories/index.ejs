@@ -1,0 +1,55 @@
+<!-- ===== ADMIN: QUẢN LÝ DANH MỤC ===== -->
+<div class="row">
+  <!-- Cột trái: Form thêm danh mục -->
+  <div class="col-md-4">
+    <div class="card p-3 mb-3">
+      <h6 class="fw-bold mb-3">Thêm danh mục mới</h6>
+      <form action="/admin/categories/create" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Tên danh mục</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mô tả</label>
+          <textarea name="description" class="form-control" rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn btn-dark w-100">Thêm danh mục</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cột phải: Danh sách danh mục -->
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header"><h6 class="mb-0">Danh sách danh mục</h6></div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr><th>#</th><th>Tên danh mục</th><th>Số sản phẩm</th><th>Thao tác</th></tr>
+          </thead>
+          <tbody>
+            <% if (categories && categories.length > 0) { %>
+              <% categories.forEach((cat, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= cat.name %></td>
+                  <td><%= cat.productCount || 0 %></td>
+                  <td>
+                    <!-- Nút xóa -->
+                    <form action="/admin/categories/delete/<%= cat._id %>" method="POST" class="d-inline"
+                          onsubmit="return confirm('Xóa danh mục này?')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="4" class="text-center py-4 text-muted">Chưa có danh mục nào.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+

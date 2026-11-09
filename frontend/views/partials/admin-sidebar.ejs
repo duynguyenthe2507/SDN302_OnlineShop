@@ -1,0 +1,42 @@
+<!-- ===== SIDEBAR ADMIN ===== -->
+<div id="sidebar" class="d-flex flex-column p-3">
+  <!-- Logo admin -->
+  <a href="/admin/dashboard" class="text-white text-decoration-none mb-4">
+    <span style="font-size:1.3rem; font-weight:700; letter-spacing:2px;">&#9889; FASHION ADMIN</span>
+  </a>
+
+  <!-- Menu điều hướng -->
+  <ul class="nav flex-column gap-1">
+    <li>
+      <a href="/admin/dashboard" class="nav-link px-3 py-2 rounded <%= page === 'dashboard' ? 'active' : '' %>">
+        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+      </a>
+    </li>
+    <li>
+      <a href="/admin/products" class="nav-link px-3 py-2 rounded <%= page === 'products' ? 'active' : '' %>">
+        <i class="bi bi-box-seam me-2"></i> Sản phẩm
+      </a>
+    </li>
+    <li>
+      <a href="/admin/categories" class="nav-link px-3 py-2 rounded <%= page === 'categories' ? 'active' : '' %>">
+        <i class="bi bi-tags me-2"></i> Danh mục
+      </a>
+    </li>
+    <li>
+      <a href="/admin/orders" class="nav-link px-3 py-2 rounded <%= page === 'orders' ? 'active' : '' %>">
+        <i class="bi bi-bag-check me-2"></i> Đơn hàng
+      </a>
+    </li>
+    <li>
+      <a href="/admin/users" class="nav-link px-3 py-2 rounded <%= page === 'users' ? 'active' : '' %>">
+        <i class="bi bi-people me-2"></i> Người dùng
+      </a>
+    </li>
+    <li class="mt-auto">
+      <a href="/logout" class="nav-link px-3 py-2 rounded text-danger">
+        <i class="bi bi-box-arrow-left me-2"></i> Đăng xuất
+      </a>
+    </li>
+  </ul>
+</div>
+

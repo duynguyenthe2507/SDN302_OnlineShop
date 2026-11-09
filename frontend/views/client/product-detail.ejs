@@ -1,0 +1,65 @@
+<!-- ===== TRANG CHI TIẾT SẢN PHẨM ===== -->
+<div class="row">
+  <!-- Ảnh sản phẩm -->
+  <div class="col-md-6">
+    <img src="<%= product.image || '/images/no-image.png' %>" class="img-fluid rounded" alt="<%= product.name %>">
+  </div>
+
+  <!-- Thông tin sản phẩm -->
+  <div class="col-md-6">
+    <h3><%= product.name %></h3>
+    <p class="text-muted"><%= product.category ? product.category.name : '' %></p>
+    <h4 class="text-danger"><%= product.price.toLocaleString('vi-VN') %>đ</h4>
+    <hr>
+    <p><%= product.description %></p>
+
+    <!-- Form thêm vào giỏ -->
+    <form action="/cart/add" method="POST">
+      <input type="hidden" name="productId" value="<%= product._id %>">
+
+      <!-- Chọn Size -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Kích cỡ:</label>
+        <div class="d-flex gap-2">
+          <% const sizes = ['S', 'M', 'L', 'XL', 'XXL']; %>
+          <% sizes.forEach(size => { %>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="size" value="<%= size %>" id="size-<%= size %>" required>
+              <label class="form-check-label border px-2 py-1 rounded" for="size-<%= size %>"><%= size %></label>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Chọn Màu -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Màu sắc:</label>
+        <div class="d-flex gap-2">
+          <% if (product.colors && product.colors.length > 0) { %>
+            <% product.colors.forEach(color => { %>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="color" value="<%= color %>" id="color-<%= color %>" required>
+                <label class="form-check-label" for="color-<%= color %>"><%= color %></label>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <span class="text-muted">Không có lựa chọn màu</span>
+            <input type="hidden" name="color" value="default">
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Số lượng -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">Số lượng:</label>
+        <input type="number" name="quantity" value="1" min="1" max="<%= product.stock %>" class="form-control" style="width:100px">
+      </div>
+
+      <button type="submit" class="btn btn-dark btn-lg me-2">
+        <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+      </button>
+      <a href="/shop" class="btn btn-outline-secondary btn-lg">← Tiếp tục mua</a>
+    </form>
+  </div>
+</div>
+

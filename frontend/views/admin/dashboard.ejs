@@ -1,0 +1,83 @@
+<!-- ===== TRANG DASHBOARD ADMIN ===== -->
+
+<!-- Thẻ thống kê tổng quan -->
+<div class="row g-3 mb-4">
+  <!-- Tổng doanh thu -->
+  <div class="col-md-3">
+    <div class="card text-white bg-dark p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <small>Doanh thu</small>
+          <h4 class="mb-0"><%= (stats.revenue || 0).toLocaleString('vi-VN') %>đ</h4>
+        </div>
+        <i class="bi bi-currency-dollar" style="font-size:2.5rem; opacity:0.5;"></i>
+      </div>
+    </div>
+  </div>
+  <!-- Tổng đơn hàng -->
+  <div class="col-md-3">
+    <div class="card text-white bg-primary p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <small>Đơn hàng</small>
+          <h4 class="mb-0"><%= stats.totalOrders || 0 %></h4>
+        </div>
+        <i class="bi bi-bag" style="font-size:2.5rem; opacity:0.5;"></i>
+      </div>
+    </div>
+  </div>
+  <!-- Tổng sản phẩm -->
+  <div class="col-md-3">
+    <div class="card text-white bg-success p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <small>Sản phẩm</small>
+          <h4 class="mb-0"><%= stats.totalProducts || 0 %></h4>
+        </div>
+        <i class="bi bi-box" style="font-size:2.5rem; opacity:0.5;"></i>
+      </div>
+    </div>
+  </div>
+  <!-- Tổng khách hàng -->
+  <div class="col-md-3">
+    <div class="card text-white bg-warning p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <small>Khách hàng</small>
+          <h4 class="mb-0"><%= stats.totalUsers || 0 %></h4>
+        </div>
+        <i class="bi bi-people" style="font-size:2.5rem; opacity:0.5;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Đơn hàng gần đây -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+    <h6 class="mb-0">Đơn hàng gần đây</h6>
+    <a href="/admin/orders" class="btn btn-sm btn-dark">Xem tất cả</a>
+  </div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead class="table-light">
+        <tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th></tr>
+      </thead>
+      <tbody>
+        <% if (recentOrders && recentOrders.length > 0) { %>
+          <% recentOrders.forEach(order => { %>
+            <tr>
+              <td>#<%= order._id.toString().slice(-8).toUpperCase() %></td>
+              <td><%= order.user ? order.user.name : 'N/A' %></td>
+              <td><%= order.totalPrice.toLocaleString('vi-VN') %>đ</td>
+              <td><span class="badge bg-warning"><%= order.status %></span></td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="4" class="text-center text-muted py-3">Chưa có đơn hàng nào</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+

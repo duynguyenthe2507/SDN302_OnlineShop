@@ -9,6 +9,7 @@ const Category = require('./models/Category');
 const Product = require('./models/Product');
 const Cart = require('./models/Cart');
 const Order = require('./models/Order');
+const safeReferrerPath = require('./utils/safeReferrerPath');
 
 const router = express.Router();
 const asyncRoute = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
@@ -20,6 +21,7 @@ const requireAdmin = (req, res, next) => req.user?.role === 'admin' ? next() : r
 const pageNumber = (value) => Math.max(1, Number.parseInt(value, 10) || 1);
 const pageLimit = 9;
 const safeRegex = (value) => new RegExp(String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+const payosSimulationEnabled = () => process.env.NODE_ENV !== 'production' && process.env.PAYOS_SIMULATION_ENABLED !== 'false';
 const uploadDir = path.join(__dirname, '../uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
 const upload = multer({
@@ -79,7 +81,7 @@ router.get('/cart', requireLogin, asyncRoute(async (req, res) => {
 }));
 router.post('/cart/add', requireLogin, asyncRoute(async (req, res) => {
   const { productId, size = '', color = 'default', quantity = 1 } = req.body;
-  if (!mongoose.isValidObjectId(productId) || !Number.isInteger(Number(quantity)) || Number(quantity) < 1) { req.session.flash = { error: 'Thông tin sản phẩm không hợp lệ.' }; return res.redirect('back'); }
+  if (!mongoose.isValidObjectId(productId) || !Number.isInteger(Number(quantity)) || Number(quantity) < 1) { req.session.flash = { error: 'Thông tin sản phẩm không hợp lệ.' }; return res.redirect(safeReferrerPath(req, '/shop')); }
   const product = await Product.findOne({ _id: productId, isActive: true });
   if (!product) { req.session.flash = { error: 'Sản phẩm không tồn tại.' }; return res.redirect('/shop'); }
   if (Number(quantity) > product.stock || (size && product.sizes.length && !product.sizes.includes(size)) || (color !== 'default' && product.colors.length && !product.colors.includes(color))) { req.session.flash = { error: 'Size, màu hoặc số lượng không hợp lệ.' }; return res.redirect(`/product/${productId}`); }
@@ -100,13 +102,13 @@ router.get('/checkout', requireLogin, asyncRoute(async (req, res) => {
   const cartItems = (cart?.items || []).filter((item) => item.product);
   if (!cartItems.length) return res.redirect('/cart');
   const totalPrice = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  res.render('client/checkout', pageData(req, { title: 'Thanh toán', cartItems, totalPrice }));
+  res.render('client/checkout', pageData(req, { title: 'Thanh toán', cartItems, totalPrice, payosSimulationEnabled: payosSimulationEnabled() }));
 }));
 router.post('/checkout', requireLogin, asyncRoute(async (req, res) => {
   const cart = await Cart.findOne({ user: req.user.id }).populate('items.product');
   if (!cart?.items.length) { req.session.flash = { error: 'Giỏ hàng đang trống.' }; return res.redirect('/cart'); }
   const { name, phone, address, paymentMethod = 'cod' } = req.body;
-  if (!name || !phone || !address || !['cod', 'bank'].includes(paymentMethod)) { req.session.flash = { error: 'Vui lòng kiểm tra thông tin giao hàng.' }; return res.redirect('/checkout'); }
+  if (!name || !phone || !address || !['cod', 'bank', 'payos'].includes(paymentMethod)) { req.session.flash = { error: 'Vui lòng kiểm tra thông tin giao hàng.' }; return res.redirect('/checkout'); }
   const changedStock = [];
   try {
     const items = [];
@@ -118,7 +120,8 @@ router.post('/checkout', requireLogin, asyncRoute(async (req, res) => {
       items.push({ product: product.id, productName: product.name, image: product.image, size: row.size, color: row.color, quantity: row.quantity, price: product.price });
     }
     const order = await Order.create({ user: req.user.id, items, name, phone, address, paymentMethod, totalPrice: items.reduce((sum, item) => sum + item.price * item.quantity, 0) });
-    cart.items = []; await cart.save(); return res.redirect(`/order-success/${order.id}`);
+    cart.items = []; await cart.save();
+    return res.redirect(paymentMethod === 'payos' ? `/payment/payos/${order.id}` : `/order-success/${order.id}`);
   } catch (error) {
     await Promise.all(changedStock.map((entry) => Product.updateOne({ _id: entry.id }, { $inc: { stock: entry.quantity } })));
     req.session.flash = { error: error.message || 'Không thể tạo đơn hàng.' }; res.redirect('/checkout');
@@ -137,6 +140,21 @@ router.get('/order/:id', requireLogin, asyncRoute(async (req, res) => {
   const order = await Order.findOne({ _id: req.params.id, user: req.user.id }).populate('items.product', 'image');
   if (!order) return res.redirect('/order-history');
   res.render('client/order-detail', pageData(req, { title: 'Chi tiết đơn hàng', order }));
+}));
+
+router.get('/payment/payos/:id', requireLogin, asyncRoute(async (req, res) => {
+  if (!payosSimulationEnabled()) return res.status(404).render('client/not-found', pageData(req));
+  const order = await Order.findOne({ _id: req.params.id, user: req.user.id });
+  if (!order || order.paymentMethod !== 'payos') return res.redirect('/order-history');
+  res.render('client/payment-payos', pageData(req, { title: 'Thanh toán PayOS mô phỏng', order }));
+}));
+router.post('/payment/payos/:id/simulate-success', requireLogin, asyncRoute(async (req, res) => {
+  if (!payosSimulationEnabled()) return res.status(404).render('client/not-found', pageData(req));
+  const order = await Order.findOne({ _id: req.params.id, user: req.user.id });
+  if (!order || order.paymentMethod !== 'payos' || order.status === 'cancelled') return res.redirect('/order-history');
+  order.paymentStatus = 'paid'; order.paymentReference ||= `SIM-${order.id.slice(-8).toUpperCase()}`;
+  await order.save();
+  res.redirect(`/order-success/${order.id}`);
 }));
 
 router.get('/profile', requireLogin, (req, res) => res.render('client/profile', pageData(req, { title: 'Tài khoản' })));
@@ -205,6 +223,7 @@ router.post('/admin/orders/:id/status', asyncRoute(async (req, res) => {
   const statuses = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'];
   if (!order || !statuses.includes(req.body.status)) { req.session.flash = { error: 'Đơn hàng hoặc trạng thái không hợp lệ.' }; return res.redirect('/admin/orders'); }
   if (order.status !== 'cancelled' && req.body.status === 'cancelled') for (const item of order.items) if (item.product) await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } });
+  if (req.body.status === 'cancelled' && order.status !== 'cancelled' && order.paymentStatus === 'paid') order.paymentStatus = 'refunded';
   order.status = req.body.status; await order.save(); req.session.flash = { success: 'Đã cập nhật trạng thái đơn hàng.' }; res.redirect(`/admin/orders/${order.id}`);
 }));
 router.get('/admin/users', asyncRoute(async (req, res) => {

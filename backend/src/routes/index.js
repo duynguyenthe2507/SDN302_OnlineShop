@@ -103,7 +103,8 @@ router.post('/orders', authenticate, asyncRoute(async (req, res) => {
   const cart = await Cart.findOne({ user: req.user.id }).populate('items.product');
   if (!cart || !cart.items.length) return res.status(400).json({ message: 'Giỏ hàng đang trống.' });
   const { name, phone, address, paymentMethod = 'cod' } = req.body;
-  if (!name || !phone || !address || !['cod', 'bank'].includes(paymentMethod)) return res.status(400).json({ message: 'Thông tin nhận hàng hoặc phương thức thanh toán không hợp lệ.' });
+  if (!name || !phone || !address || !['cod', 'bank', 'payos'].includes(paymentMethod)) return res.status(400).json({ message: 'Thông tin nhận hàng hoặc phương thức thanh toán không hợp lệ.' });
+  if (paymentMethod === 'payos' && (process.env.NODE_ENV === 'production' || process.env.PAYOS_SIMULATION_ENABLED === 'false')) return res.status(503).json({ message: 'Thanh toán mô phỏng PayOS hiện đang tắt.' });
   const decremented = [];
   try {
     const items = [];
@@ -117,7 +118,7 @@ router.post('/orders', authenticate, asyncRoute(async (req, res) => {
     }
     const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const order = await Order.create({ user: req.user.id, items, name, phone, address, paymentMethod, totalPrice });
-    cart.items = []; await cart.save(); res.status(201).json({ order });
+    cart.items = []; await cart.save(); res.status(201).json({ order, ...(paymentMethod === 'payos' ? { paymentSimulationUrl: `/payment/payos/${order.id}` } : {}) });
   } catch (error) {
     await Promise.all(decremented.map((entry) => Product.updateOne({ _id: entry.id }, { $inc: { stock: entry.quantity } })));
     throw error;
@@ -130,6 +131,15 @@ router.get('/orders/my', authenticate, asyncRoute(async (req, res) => {
 }));
 router.get('/orders/my/:id', authenticate, asyncRoute(async (req, res) => {
   const order = await Order.findOne({ _id: req.params.id, user: req.user.id }); if (!order) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' }); res.json({ order });
+}));
+
+router.post('/orders/:id/payos/simulate-success', authenticate, asyncRoute(async (req, res) => {
+  if (process.env.NODE_ENV === 'production' || process.env.PAYOS_SIMULATION_ENABLED === 'false') return res.status(404).json({ message: 'Không tìm thấy endpoint.' });
+  const order = await Order.findOne({ _id: req.params.id, user: req.user.id });
+  if (!order || order.paymentMethod !== 'payos' || order.status === 'cancelled') return res.status(404).json({ message: 'Không tìm thấy đơn PayOS hợp lệ.' });
+  order.paymentStatus = 'paid'; order.paymentReference ||= `SIM-${order.id.slice(-8).toUpperCase()}`;
+  await order.save();
+  res.json({ order, simulated: true });
 }));
 
 // Admin catalog and order management
@@ -148,7 +158,7 @@ router.patch('/admin/orders/:id/status', asyncRoute(async (req, res) => {
   const allowed = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled']; if (!allowed.includes(req.body.status)) return res.status(400).json({ message: 'Trạng thái đơn hàng không hợp lệ.' });
   const order = await Order.findById(req.params.id); if (!order) return res.status(404).json({ message: 'Không tìm thấy đơn hàng.' });
   if (order.status === 'cancelled' && req.body.status !== 'cancelled') return res.status(409).json({ message: 'Đơn hàng đã hủy không thể mở lại.' });
-  if (req.body.status === 'cancelled' && order.status !== 'cancelled') { for (const item of order.items) if (item.product) await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } }); }
+  if (req.body.status === 'cancelled' && order.status !== 'cancelled') { for (const item of order.items) if (item.product) await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } }); if (order.paymentStatus === 'paid') order.paymentStatus = 'refunded'; }
   order.status = req.body.status; if (req.body.paymentStatus && ['unpaid', 'paid', 'refunded'].includes(req.body.paymentStatus)) order.paymentStatus = req.body.paymentStatus;
   await order.save(); res.json({ order });
 }));

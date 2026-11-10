@@ -10,6 +10,7 @@ const webRoutes = require('./web');
 const User = require('./models/User');
 const Cart = require('./models/Cart');
 const path = require('path');
+const safeReferrerPath = require('./utils/safeReferrerPath');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -21,6 +22,7 @@ app.use(cors({ origin: process.env.CLIENT_ORIGIN ? process.env.CLIENT_ORIGIN.spl
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/assets', express.static(path.join(__dirname, '../../frontend/public')));
 app.use(session({
   name: 'fashion.sid', secret: process.env.SESSION_SECRET || process.env.JWT_SECRET,
   resave: false, saveUninitialized: false,
@@ -49,9 +51,11 @@ app.use((req, res) => req.path.startsWith('/api') ? res.status(404).json({ messa
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
   const status = error.status || (error.name === 'ValidationError' || error.name === 'CastError' ? 400 : error.code === 11000 ? 409 : 500);
+  if (process.env.NODE_ENV !== 'production') console.error(error);
   if (!req.path.startsWith('/api')) {
     req.session.flash = { error: status >= 500 ? 'Đã xảy ra lỗi. Vui lòng thử lại.' : error.message };
-    return res.redirect('back');
+    const fallback = req.path.startsWith('/admin') && req.user?.role === 'admin' ? '/admin/dashboard' : '/';
+    return res.redirect(safeReferrerPath(req, fallback));
   }
   res.status(status).json({ message: status >= 500 ? 'Đã xảy ra lỗi máy chủ.' : error.message, ...(process.env.NODE_ENV === 'development' && status >= 500 ? { detail: error.message } : {}) });
 });

@@ -1,60 +1,19 @@
-<!-- ===== TRANG THANH TOÁN ===== -->
-<h4 class="mb-4">Thanh toán</h4>
-<div class="row">
-  <!-- Form thông tin giao hàng -->
-  <div class="col-md-7">
-    <div class="card p-4 mb-3">
-      <h6 class="fw-bold mb-3">Thông tin giao hàng</h6>
-      <form action="/checkout" method="POST" id="checkout-form">
-        <div class="mb-3">
-          <label class="form-label">Họ và tên</label>
-          <input type="text" name="name" class="form-control" value="<%= user ? user.name : '' %>" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Số điện thoại</label>
-          <input type="text" name="phone" class="form-control" value="<%= user ? user.phone : '' %>" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Địa chỉ giao hàng</label>
-          <textarea name="address" class="form-control" rows="3" placeholder="Số nhà, đường, phường, quận, tỉnh/thành..." required><%= user ? user.address : '' %></textarea>
-        </div>
-
-        <!-- Phương thức thanh toán -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Phương thức thanh toán</label>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="paymentMethod" value="cod" id="cod" checked>
-            <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="paymentMethod" value="bank" id="bank">
-            <label class="form-check-label" for="bank">🏦 Chuyển khoản ngân hàng</label>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-dark btn-lg w-100">Đặt hàng</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Tóm tắt đơn hàng -->
-  <div class="col-md-5">
-    <div class="card p-3">
-      <h6 class="fw-bold mb-3">Đơn hàng của bạn</h6>
-      <% if (cartItems) { %>
-        <% cartItems.forEach(item => { %>
-          <div class="d-flex justify-content-between mb-2">
-            <span><%= item.product.name %> x<%= item.quantity %></span>
-            <span><%= (item.product.price * item.quantity).toLocaleString('vi-VN') %>đ</span>
-          </div>
-        <% }) %>
-      <% } %>
-      <hr>
-      <div class="d-flex justify-content-between fw-bold">
-        <span>Tổng cộng:</span>
-        <span class="text-danger"><%= totalPrice ? totalPrice.toLocaleString('vi-VN') : 0 %>đ</span>
+<div class="container">
+  <div class="shop-breadcrumb"><a href="/">Trang chủ</a> <i class="bi bi-chevron-right mx-1"></i><a href="/cart">Giỏ hàng</a> <i class="bi bi-chevron-right mx-1"></i> Thanh toán</div>
+  <div class="d-flex justify-content-between align-items-center mb-4"><div><div class="section-kicker">Hoàn tất đơn hàng</div><h1 class="mb-0" style="font-family:Georgia,serif;font-weight:500">Thanh toán</h1></div><div class="checkout-step active"><span>1</span> Giao hàng <i class="bi bi-chevron-right mx-1"></i><span>2</span> Thanh toán</div></div>
+  <div class="row g-4"><section class="col-lg-7"><div class="summary-card">
+    <h2 class="h3 mb-4">Thông tin nhận hàng</h2>
+    <form action="/checkout" method="POST" id="checkout-form">
+      <div class="row g-3"><div class="col-md-6"><label class="form-label">Họ và tên</label><input class="form-control" name="name" value="<%= user ? user.name : '' %>" autocomplete="name" required></div><div class="col-md-6"><label class="form-label">Số điện thoại</label><input class="form-control" name="phone" value="<%= user ? user.phone : '' %>" autocomplete="tel" required></div><div class="col-12"><label class="form-label">Địa chỉ giao hàng</label><textarea class="form-control" name="address" rows="3" placeholder="Số nhà, đường, phường, quận, tỉnh/thành" autocomplete="street-address" required><%= user ? user.address : '' %></textarea></div></div>
+      <h3 class="h5 mt-4 mb-3">Phương thức thanh toán</h3>
+      <div class="d-grid gap-2">
+        <label class="payment-option"><div class="d-flex align-items-center gap-3"><input type="radio" name="paymentMethod" value="cod" checked><span class="fs-5"><i class="bi bi-cash-coin"></i></span><span><strong>Thanh toán khi nhận hàng</strong><small class="d-block text-muted">Thanh toán tiền mặt cho đơn vị giao hàng.</small></span></div></label>
+        <label class="payment-option"><div class="d-flex align-items-center gap-3"><input type="radio" name="paymentMethod" value="bank"><span class="fs-5"><i class="bi bi-bank"></i></span><span><strong>Chuyển khoản ngân hàng</strong><small class="d-block text-muted">Lựa chọn được ghi nhận trên đơn; chưa xác nhận tự động.</small></span></div></label>
+        <% if (payosSimulationEnabled) { %><label class="payment-option"><div class="d-flex align-items-center gap-3"><input type="radio" name="paymentMethod" value="payos"><span class="fs-5 text-primary"><i class="bi bi-qr-code-scan"></i></span><span><strong>PayOS · chế độ mô phỏng</strong><small class="d-block text-muted">Tạo đơn demo, sau đó bấm xác nhận để giả lập thanh toán.</small></span></div></label><% } %>
       </div>
-    </div>
-  </div>
+      <button class="btn btn-shop-dark btn-lg w-100 mt-4">Đặt hàng <i class="bi bi-arrow-right ms-2"></i></button>
+      <p class="small text-muted mt-3 mb-0"><i class="bi bi-lock me-1"></i> Bản demo không thực hiện giao dịch tiền thật.</p>
+    </form>
+  </div></section>
+  <aside class="col-lg-5"><div class="summary-card summary-sticky"><div class="section-kicker">Đơn hàng của bạn</div><h2 class="h3 mt-1 mb-3"><%= cartItems.length %> sản phẩm</h2><div class="d-grid gap-3"><% cartItems.forEach(item => { %><div class="d-flex gap-3 align-items-center"><img src="<%= item.product.image || 'https://placehold.co/120x150/f2eee6/65746a?text=FASHION' %>" alt="" style="width:58px;height:70px;object-fit:cover;border-radius:3px"><div class="flex-grow-1"><div class="fw-semibold small"><%= item.product.name %></div><div class="small text-muted"><%= item.size || '—' %> · <%= item.color || '—' %> · SL <%= item.quantity %></div></div><strong class="small"><%= (item.product.price * item.quantity).toLocaleString('vi-VN') %>₫</strong></div><% }) %></div><hr><div class="d-flex justify-content-between mb-2"><span class="text-muted">Tạm tính</span><span><%= totalPrice.toLocaleString('vi-VN') %>₫</span></div><div class="d-flex justify-content-between mb-3"><span class="text-muted">Giao hàng</span><span class="text-success">Miễn phí</span></div><hr><div class="d-flex justify-content-between fw-bold"><span>Tổng thanh toán</span><span class="product-price"><%= totalPrice.toLocaleString('vi-VN') %>₫</span></div></div></aside></div>
 </div>
-

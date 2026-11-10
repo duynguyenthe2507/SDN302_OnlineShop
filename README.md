@@ -23,9 +23,9 @@ Sao chép `.env.example` thành `.env`, đặt `MONGODB_URI`, `JWT_SECRET` và `
 npm run dev
 ```
 
-Dữ liệu mẫu tương thích MongoDB Compass nằm trong [`database/compass`](database/compass/README.md).
+Dữ liệu mẫu tương thích MongoDB Compass nằm trong [`database/compass`](database/compass/README.md). Để thêm 10 sản phẩm mẫu vào MongoDB đang chạy (có thể chạy lặp lại an toàn): `node backend/scripts/seedSampleProducts.js`.
 
-Website EJS chạy tại `http://localhost:3000`; REST API ở `http://localhost:3000/api`, trạng thái kết nối tại `GET /api/health`. Đăng nhập bằng tài khoản mẫu trong `database/compass/README.md` hoặc đăng ký tài khoản mới. Để cấp quyền quản trị cho user khác, cập nhật role thủ công trong MongoDB, ví dụ Mongo shell:
+Website EJS chạy tại `http://localhost:3000`; REST API ở `http://localhost:3000/api`, trạng thái kết nối tại `GET /api/health`. Đăng nhập bằng tài khoản mẫu trong `database/compass/README.md` hoặc đăng ký tài khoản mới. PayOS hiện là **mô phỏng**, không thu tiền thật; bật/tắt bằng `PAYOS_SIMULATION_ENABLED` và tự động vô hiệu hóa khi `NODE_ENV=production`. Để cấp quyền quản trị cho user khác, cập nhật role thủ công trong MongoDB, ví dụ Mongo shell:
 
 ```js
 db.users.updateOne({ email: "admin@example.com" }, { $set: { role: "admin" } })

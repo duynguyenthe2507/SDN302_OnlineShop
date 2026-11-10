@@ -1,58 +1,31 @@
-<!-- ===== HEADER / NAVIGATION BAR ===== -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<div class="announcement">MIỄN PHÍ GIAO HÀNG CHO ĐƠN TỪ 599.000₫ <span class="mx-2">·</span> ĐỔI TRẢ TRONG 7 NGÀY</div>
+<header class="shop-header">
+  <div class="container shop-header-inner">
+    <a class="brand-mark" href="/">FASHION<span>EVERYDAY, BETTER</span></a>
+    <form class="search-box" action="/shop" method="GET">
+      <input class="form-control" type="search" name="q" placeholder="Tìm áo sơ mi, quần jeans..." value="<%= query || '' %>" aria-label="Tìm sản phẩm">
+      <button type="submit" aria-label="Tìm kiếm"><i class="bi bi-search"></i></button>
+    </form>
+    <div class="header-actions">
+      <a class="header-action" href="/order-history" title="Đơn hàng"><i class="bi bi-box2-heart fs-5"></i><span class="action-label ms-1">Đơn hàng</span></a>
+      <a class="header-action" href="/cart" title="Giỏ hàng"><i class="bi bi-bag fs-5"></i><% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %></a>
+      <% if (user) { %>
+        <div class="dropdown user-menu">
+          <button class="btn btn-link header-action p-0 text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-person-circle fs-5"></i><span class="action-label ms-1"><%= user.name %></span></button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <% if (user.role === 'admin') { %><li><a class="dropdown-item" href="/admin/dashboard">Quản trị cửa hàng</a></li><li><hr class="dropdown-divider"></li><% } %>
+            <li><a class="dropdown-item" href="/profile">Tài khoản</a></li><li><a class="dropdown-item" href="/order-history">Đơn hàng</a></li><li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
+          </ul>
+        </div>
+      <% } else { %><a class="header-action" href="/login" title="Đăng nhập"><i class="bi bi-person fs-5"></i><span class="action-label ms-1">Đăng nhập</span></a><% } %>
+    </div>
+  </div>
+</header>
+<nav class="navbar navbar-expand-md main-nav py-0">
   <div class="container">
-    <!-- Logo -->
-    <a class="navbar-brand" href="/">FASHION</a>
-
-    <!-- Nút hamburger cho mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navMenu">
-      <!-- Menu chính -->
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-        <li class="nav-item"><a class="nav-link" href="/shop">Cửa hàng</a></li>
-      </ul>
-
-      <!-- Thanh tìm kiếm -->
-      <form class="d-flex me-3" action="/shop" method="GET">
-        <input class="form-control" type="search" name="q" placeholder="Tìm sản phẩm..." value="<%= query || '' %>">
-        <button class="btn btn-outline-light ms-1" type="submit"><i class="bi bi-search"></i></button>
-      </form>
-
-      <!-- Icon giỏ hàng + tài khoản -->
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/cart">
-            <i class="bi bi-cart3"></i>
-            <!-- Hiện số lượng sản phẩm trong giỏ -->
-            <% if (cartCount && cartCount > 0) { %>
-              <span class="badge bg-danger"><%= cartCount %></span>
-            <% } %>
-          </a>
-        </li>
-
-        <% if (user) { %>
-          <!-- Nếu đã đăng nhập -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-person-circle"></i> <%= user.name %>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="/profile">Tài khoản</a></li>
-              <li><a class="dropdown-item" href="/order-history">Đơn hàng</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
-            </ul>
-          </li>
-        <% } else { %>
-          <!-- Nếu chưa đăng nhập -->
-          <li class="nav-item"><a class="nav-link" href="/login">Đăng nhập</a></li>
-        <% } %>
-      </ul>
+    <button class="navbar-toggler ms-auto my-2" type="button" data-bs-toggle="collapse" data-bs-target="#shopNav" aria-label="Mở menu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse justify-content-center" id="shopNav">
+      <ul class="navbar-nav"><li class="nav-item"><a class="nav-link" href="/">TRANG CHỦ</a></li><li class="nav-item"><a class="nav-link" href="/shop">TẤT CẢ SẢN PHẨM</a></li><li class="nav-item"><a class="nav-link" href="/shop?category=672000000000000000000001">ÁO THUN</a></li><li class="nav-item"><a class="nav-link" href="/shop?category=672000000000000000000003">QUẦN</a></li><li class="nav-item"><a class="nav-link" href="/shop?category=672000000000000000000004">ÁO KHOÁC</a></li></ul>
     </div>
   </div>
 </nav>
-

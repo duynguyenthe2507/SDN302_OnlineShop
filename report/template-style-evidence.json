@@ -1,0 +1,170 @@
+{
+  "input": "F:\\FPT\\FA24\\PRJ301\\PRJ301_HE173401_ASSIGNMENT\\HE173401_GiangTT_PRJ301.docx",
+  "fonts_by_char_count": {
+    "Times New Roman": 26363
+  },
+  "direct_run_formatting_runs": 761,
+  "direct_paragraph_formatting_paragraphs": 430,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 65,
+      "text": "Ch\u01b0\u01a1ng 1: C\u01a1 s\u1edf l\u00fd thuy\u1ebft",
+      "style": "Normal"
+    },
+    {
+      "para_index": 79,
+      "text": "1.1.2 C\u00e1c kh\u00e1i ni\u1ec7m c\u01a1 b\u1ea3n Trong HTML",
+      "style": "Normal"
+    },
+    {
+      "para_index": 81,
+      "text": "-Th\u1ebb <head>...</head>: T\u1ea1o \u0111\u1ea7u m\u1ee5c trang",
+      "style": "Normal"
+    },
+    {
+      "para_index": 104,
+      "text": "1.2.1 T\u1ed5ng quan v\u1ec1 CSS",
+      "style": "Normal"
+    },
+    {
+      "para_index": 123,
+      "text": "1.2.2 M\u1ed9t s\u1ed1 kh\u00e1i ni\u1ec7m c\u01a1 b\u1ea3n trong CSS",
+      "style": "Normal"
+    },
+    {
+      "para_index": 124,
+      "text": "\t*\u0110\u1ecbnh ngh\u0129a c\u00e1c thu\u1ed9c t\u00ednh v\u1ec1 ch\u1eef",
+      "style": "Normal"
+    },
+    {
+      "para_index": 135,
+      "text": "\t*SQL SERVER l\u00e0 g\u00ec ?",
+      "style": "Normal"
+    },
+    {
+      "para_index": 137,
+      "text": "\t*T\u1ea1i sao l\u1ea1i s\u1eed d\u1ee5ng SQL SERVER?",
+      "style": "Normal"
+    },
+    {
+      "para_index": 151,
+      "text": "*T\u00ecm hi\u1ec3u v\u1ec1 UML?",
+      "style": "Normal"
+    },
+    {
+      "para_index": 183,
+      "text": "1.4.1 Gi\u1edbi thi\u1ec7u v\u1ec1 Bootstrap",
+      "style": "Normal"
+    },
+    {
+      "para_index": 184,
+      "text": "*Bootstrap l\u00e0 g\u00ec?",
+      "style": "Normal"
+    },
+    {
+      "para_index": 187,
+      "text": "*T\u1ea1i sao l\u1ea1i nh\u01b0 v\u1eady?",
+      "style": "Normal"
+    },
+    {
+      "para_index": 190,
+      "text": "*T\u1ea1i sao ch\u00fang ta n\u00ean s\u1eed d\u1ee5ng Bootstrap?",
+      "style": "Normal"
+    },
+    {
+      "para_index": 203,
+      "text": "1.4.2 L\u1ecbch s\u1eed c\u1ee7a Bootstrap",
+      "style": "Normal"
+    },
+    {
+      "para_index": 207,
+      "text": "1.4.3 C\u00e1c phi\u00ean b\u1ea3n c\u1ee7a Bootstrap",
+      "style": "Normal"
+    },
+    {
+      "para_index": 233,
+      "text": "2.1.2 \u0110\u00e1nh gi\u00e1 hi\u1ec7n tr\u1ea1ng",
+      "style": "Normal"
+    },
+    {
+      "para_index": 234,
+      "text": "\t* \u01afu \u0111i\u1ec3m",
+      "style": "Normal"
+    },
+    {
+      "para_index": 262,
+      "text": "2.1.3 M\u1ee5c \u0111\u00edch c\u1ee7a website",
+      "style": "Normal"
+    },
+    {
+      "para_index": 273,
+      "text": "2.1.4 Gi\u1ea3i ph\u00e1p x\u00e2y d\u1ef1ng h\u1ec7 th\u1ed1ng",
+      "style": "Normal"
+    },
+    {
+      "para_index": 283,
+      "text": "2.2.1 Y\u00eau c\u1ea7u chi ti\u1ebft v\u1ec1 website",
+      "style": "Normal"
+    }
+  ],
+  "examples": {
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 1,
+        "text": "",
+        "style": "Normal"
+      },
+      {
+        "para_index": 13,
+        "text": "M\u1ee5c l\u1ee5c",
+        "style": "Normal"
+      },
+      {
+        "para_index": 14,
+        "text": "M\u1ee4C L\u1ee4C ................................................................................................................",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 15,
+        "text": "L\u1edcI M\u1ede \u0110\u1ea6U .............................................................................................................",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 16,
+        "text": "1.1. T\u00ecm hi\u1ec3u v\u1ec1 HTML. .................................................................................................",
+        "style": "Normal"
+      }
+    ],
+    "direct_run_formatting": [
+      {
+        "para_index": 2,
+        "run_text": "B\u00c1O C\u00c1O ASSIGNMENT M\u00d4N PRJ301",
+        "style": "Normal"
+      },
+      {
+        "para_index": 10,
+        "run_text": "L\u1edbp:",
+        "style": "Normal"
+      },
+      {
+        "para_index": 10,
+        "run_text": " ",
+        "style": "Normal"
+      },
+      {
+        "para_index": 10,
+        "run_text": "Se1834",
+        "style": "Normal"
+      },
+      {
+        "para_index": 11,
+        "run_text": "Mssv:",
+        "style": "Normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

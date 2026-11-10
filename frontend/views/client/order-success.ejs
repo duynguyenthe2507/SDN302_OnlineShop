@@ -16,7 +16,8 @@
         <p><strong>SĐT:</strong> <%= order.phone %></p>
         <p><strong>Địa chỉ:</strong> <%= order.address %></p>
         <p><strong>Tổng tiền:</strong> <span class="text-danger"><%= order.totalPrice.toLocaleString('vi-VN') %>đ</span></p>
-        <p><strong>Thanh toán:</strong> <%= order.paymentMethod === 'cod' ? 'COD - Thanh toán khi nhận hàng' : 'Chuyển khoản' %></p>
+        <p><strong>Thanh toán:</strong> <%= order.paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng (COD)' : order.paymentMethod === 'payos' ? 'PayOS mô phỏng' : 'Chuyển khoản' %></p>
+        <p><strong>Trạng thái thanh toán:</strong> <%= order.paymentStatus === 'paid' ? 'Đã thanh toán (mô phỏng)' : 'Chưa thanh toán' %></p>
       </div>
     </div>
   <% } %>

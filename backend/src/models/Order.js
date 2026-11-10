@@ -9,7 +9,8 @@ const orderSchema = new mongoose.Schema({
   }],
   name: { type: String, required: true, trim: true }, phone: { type: String, required: true, trim: true },
   address: { type: String, required: true, trim: true },
-  paymentMethod: { type: String, enum: ['cod', 'bank'], default: 'cod' },
+  paymentMethod: { type: String, enum: ['cod', 'bank', 'payos'], default: 'cod' },
+  paymentReference: { type: String, default: '' },
   paymentStatus: { type: String, enum: ['unpaid', 'paid', 'refunded'], default: 'unpaid' },
   status: { type: String, enum: ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'], default: 'pending', index: true },
   totalPrice: { type: Number, required: true, min: 0 }

@@ -1,77 +1,17 @@
-<!-- ===== TRANG CỬA HÀNG (Danh sách sản phẩm + Bộ lọc + Phân trang) ===== -->
-<div class="row">
-  <!-- ===== CỘT BỘ LỌC (trái) ===== -->
-  <div class="col-md-3">
-    <div class="card p-3 mb-3">
-      <h6 class="fw-bold mb-3">Bộ lọc</h6>
-      <form action="/shop" method="GET">
-        <!-- Lọc theo danh mục -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Danh mục</label>
-          <% if (categories) { %>
-            <% categories.forEach(cat => { %>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" value="<%= cat._id %>"
-                  <%= filters.category === String(cat._id) ? 'checked' : '' %>>
-                <label class="form-check-label"><%= cat.name %></label>
-              </div>
-            <% }) %>
-          <% } %>
-        </div>
-        <!-- Lọc theo giá -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Khoảng giá</label>
-          <input type="number" name="minPrice" class="form-control mb-1" placeholder="Giá từ" value="<%= filters.minPrice || '' %>">
-          <input type="number" name="maxPrice" class="form-control" placeholder="Đến giá" value="<%= filters.maxPrice || '' %>">
-        </div>
-        <button type="submit" class="btn btn-dark w-100">Áp dụng</button>
-        <a href="/shop" class="btn btn-outline-secondary w-100 mt-2">Xóa bộ lọc</a>
-      </form>
-    </div>
+<div class="container">
+  <div class="shop-breadcrumb"><a href="/">Trang chủ</a> <i class="bi bi-chevron-right mx-1"></i> Cửa hàng</div>
+  <div class="shop-toolbar d-flex flex-wrap justify-content-between align-items-end gap-3"><div><div class="section-kicker">Bộ sưu tập FASHION</div><h1 class="mb-1" style="font-family:Georgia,serif;font-weight:500">Cửa hàng</h1><div class="small text-muted">Tìm thấy <strong><%= totalProducts || 0 %></strong> sản phẩm</div></div>
+    <form action="/shop" method="GET" class="d-flex align-items-center gap-2"><% if (filters.q) { %><input type="hidden" name="q" value="<%= filters.q %>"><% } %><% if (filters.category) { %><input type="hidden" name="category" value="<%= filters.category %>"><% } %><% if (filters.minPrice) { %><input type="hidden" name="minPrice" value="<%= filters.minPrice %>"><% } %><% if (filters.maxPrice) { %><input type="hidden" name="maxPrice" value="<%= filters.maxPrice %>"><% } %><label for="sort" class="small text-muted">Sắp xếp</label><select id="sort" name="sort" class="form-select form-select-sm" onchange="this.form.submit()"><option value="newest" <%= filters.sort === 'newest' || !filters.sort ? 'selected' : '' %>>Mới nhất</option><option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>>Giá thấp đến cao</option><option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>>Giá cao đến thấp</option></select></form>
   </div>
-
-  <!-- ===== CỘT SẢN PHẨM (phải) ===== -->
-  <div class="col-md-9">
-    <!-- Tiêu đề + sắp xếp -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <span class="text-muted">Tìm thấy <strong><%= totalProducts || 0 %></strong> sản phẩm</span>
-      <form action="/shop" method="GET">
-        <select name="sort" class="form-select form-select-sm" onchange="this.form.submit()">
-          <option value="">Sắp xếp theo</option>
-          <option value="price_asc"  <%= filters.sort === 'price_asc'  ? 'selected' : '' %>>Giá tăng dần</option>
-          <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>>Giá giảm dần</option>
-          <option value="newest"     <%= filters.sort === 'newest'     ? 'selected' : '' %>>Mới nhất</option>
-        </select>
-      </form>
-    </div>
-
-    <!-- Danh sách sản phẩm -->
-    <div class="row g-3">
-      <% if (products && products.length > 0) { %>
-        <% products.forEach(product => { %>
-          <div class="col-6 col-md-4">
-            <div class="card h-100">
-              <img src="<%= product.image || '/images/no-image.png' %>" class="card-img-top" alt="<%= product.name %>" style="height:200px; object-fit:cover;">
-              <div class="card-body">
-                <h6 class="card-title"><%= product.name %></h6>
-                <p class="text-danger fw-bold mb-1"><%= product.price.toLocaleString('vi-VN') %>đ</p>
-                <p class="text-muted small mb-2"><%= product.category ? product.category.name : '' %></p>
-                <a href="/product/<%= product._id %>" class="btn btn-dark btn-sm w-100">Xem</a>
-              </div>
-            </div>
-          </div>
-        <% }) %>
-      <% } else { %>
-        <div class="col-12">
-          <p class="text-center text-muted py-5">Không tìm thấy sản phẩm nào.</p>
-        </div>
-      <% } %>
-    </div>
-
-    <!-- Phân trang -->
-    <div class="mt-4">
-      <%- include('../partials/pagination', { currentPage, totalPages, baseUrl: '/shop' }) %>
-    </div>
+  <div class="row g-4">
+    <aside class="col-lg-3"><div class="filter-card"><div class="filter-title mb-3">Bộ lọc</div><form action="/shop" method="GET">
+      <div class="mb-4"><label class="form-label">Từ khóa</label><input type="search" class="form-control" name="q" value="<%= filters.q || '' %>" placeholder="Tên sản phẩm"></div>
+      <div class="mb-4"><label class="form-label">Danh mục</label><select class="form-select" name="category"><option value="">Tất cả danh mục</option><% if (categories) { categories.forEach(cat => { %><option value="<%= cat._id %>" <%= filters.category === String(cat._id) ? 'selected' : '' %>><%= cat.name %></option><% }) } %></select></div>
+      <div class="mb-4"><label class="form-label">Khoảng giá (₫)</label><div class="d-flex gap-2"><input type="number" min="0" class="form-control" name="minPrice" value="<%= filters.minPrice || '' %>" placeholder="Từ"><input type="number" min="0" class="form-control" name="maxPrice" value="<%= filters.maxPrice || '' %>" placeholder="Đến"></div></div>
+      <% if (filters.sort) { %><input type="hidden" name="sort" value="<%= filters.sort %>"><% } %><button class="btn btn-shop-dark w-100">Áp dụng bộ lọc</button><a href="/shop" class="btn btn-outline-secondary w-100 mt-2">Xóa bộ lọc</a>
+    </form></div></aside>
+    <section class="col-lg-9"><div class="row product-grid">
+      <% if (products && products.length) { products.forEach(product => { %><%- include('../partials/product-card', { product }) %><% }) } else { %><div class="col-12"><div class="surface-card text-center p-5"><i class="bi bi-search fs-2 text-muted"></i><h3 class="h5 mt-3">Chưa tìm thấy sản phẩm</h3><p class="text-muted">Thử đổi từ khóa hoặc bộ lọc của bạn.</p><a href="/shop" class="btn btn-shop-dark">Xem tất cả sản phẩm</a></div></div><% } %>
+    </div><div class="mt-5"><%- include('../partials/pagination', { currentPage, totalPages, baseUrl: '/shop' }) %></div></section>
   </div>
 </div>
-

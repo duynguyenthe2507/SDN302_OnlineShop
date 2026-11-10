@@ -17,13 +17,14 @@
 <!-- Bảng đơn hàng -->
 <div class="card">
   <div class="card-body p-0">
-    <table class="table table-hover mb-0">
+        <table class="table admin-table table-hover mb-0">
       <thead class="table-light">
         <tr>
           <th>Mã đơn</th>
           <th>Khách hàng</th>
           <th>Tổng tiền</th>
           <th>Ngày đặt</th>
+          <th>Thanh toán</th>
           <th>Trạng thái</th>
           <th>Thao tác</th>
         </tr>
@@ -36,6 +37,7 @@
               <td><%= order.user ? order.user.name : order.name %></td>
               <td class="text-danger"><%= order.totalPrice.toLocaleString('vi-VN') %>đ</td>
               <td><%= new Date(order.createdAt).toLocaleDateString('vi-VN') %></td>
+              <td><span class="small"><%= order.paymentMethod === 'payos' ? 'PayOS demo' : order.paymentMethod === 'cod' ? 'COD' : 'Chuyển khoản' %></span><br><small class="text-muted"><%= order.paymentStatus === 'paid' ? 'Đã thanh toán' : order.paymentStatus === 'refunded' ? 'Hoàn tiền' : 'Chưa thanh toán' %></small></td>
               <td>
                 <!-- Badge trạng thái -->
                 <%
@@ -52,7 +54,7 @@
             </tr>
           <% }) %>
         <% } else { %>
-          <tr><td colspan="6" class="text-center py-4 text-muted">Chưa có đơn hàng nào.</td></tr>
+          <tr><td colspan="7" class="text-center py-4 text-muted">Chưa có đơn hàng nào.</td></tr>
         <% } %>
       </tbody>
     </table>

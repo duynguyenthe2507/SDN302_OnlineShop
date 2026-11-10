@@ -1,0 +1,102 @@
+[
+  {
+    "_id": { "$oid": "673000000000000000000006" },
+    "name": "Áo thun Relaxed Essential",
+    "description": "Áo thun dáng relaxed từ cotton mềm, thoáng và dễ phối cùng trang phục hằng ngày.",
+    "category": { "$oid": "672000000000000000000001" },
+    "price": 289000,
+    "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL", "XXL"], "colors": ["Trắng", "Đen", "Xám"], "stock": 32, "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "673000000000000000000007" },
+    "name": "Áo thun Heavyweight Studio",
+    "description": "Cotton dày dặn, phom đứng và đường may chắc chắn cho phong cách tối giản.",
+    "category": { "$oid": "672000000000000000000001" },
+    "price": 359000,
+    "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL"], "colors": ["Trắng ngà", "Than chì"], "stock": 24, "isActive": true,
+    "createdAt": { "$date": "2026-11-09T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-09T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "673000000000000000000008" },
+    "name": "Áo sơ mi Linen Summer",
+    "description": "Linen pha mềm nhẹ, thoáng mát; phù hợp mặc riêng hoặc khoác ngoài.",
+    "category": { "$oid": "672000000000000000000002" },
+    "price": 529000,
+    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL", "XXL"], "colors": ["Trắng", "Be", "Xanh nhạt"], "stock": 17, "isActive": true,
+    "createdAt": { "$date": "2026-11-08T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-08T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "673000000000000000000009" },
+    "name": "Áo sơ mi Oxford Classic",
+    "description": "Chất Oxford bền đẹp với cổ áo đứng phom, phù hợp môi trường công sở và cuối tuần.",
+    "category": { "$oid": "672000000000000000000002" },
+    "price": 589000,
+    "image": "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL"], "colors": ["Trắng", "Xanh navy"], "stock": 21, "isActive": true,
+    "createdAt": { "$date": "2026-11-07T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-07T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "67300000000000000000000a" },
+    "name": "Quần Jeans Straight Indigo",
+    "description": "Denim co giãn nhẹ, ống đứng cổ điển và dễ phối với áo thun hoặc sơ mi.",
+    "category": { "$oid": "672000000000000000000003" },
+    "price": 679000,
+    "image": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL", "XXL"], "colors": ["Indigo", "Đen"], "stock": 19, "isActive": true,
+    "createdAt": { "$date": "2026-11-06T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-06T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "67300000000000000000000b" },
+    "name": "Quần Kaki Tapered Form",
+    "description": "Kaki mềm, phom tapered gọn gàng với lưng quần thoải mái cho ngày dài.",
+    "category": { "$oid": "672000000000000000000003" },
+    "price": 619000,
+    "image": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL"], "colors": ["Be", "Đen", "Olive"], "stock": 16, "isActive": true,
+    "createdAt": { "$date": "2026-11-05T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-05T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "67300000000000000000000c" },
+    "name": "Quần Ống Rộng Daily Move",
+    "description": "Phom rộng hiện đại, chất liệu rủ nhẹ và cạp quần dễ điều chỉnh.",
+    "category": { "$oid": "672000000000000000000003" },
+    "price": 649000,
+    "image": "https://images.unsplash.com/photo-1506629905607-d9d7a0d6a8a1?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL"], "colors": ["Đen", "Xám", "Nâu"], "stock": 13, "isActive": true,
+    "createdAt": { "$date": "2026-11-04T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-04T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "67300000000000000000000d" },
+    "name": "Áo khoác Bomber Minimal",
+    "description": "Bomber nhẹ với lớp lót mềm, bo cổ tay và túi tiện dụng.",
+    "category": { "$oid": "672000000000000000000004" },
+    "price": 899000,
+    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["M", "L", "XL", "XXL"], "colors": ["Đen", "Olive"], "stock": 11, "isActive": true,
+    "createdAt": { "$date": "2026-11-03T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-03T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "67300000000000000000000e" },
+    "name": "Áo khoác Denim Layer",
+    "description": "Denim wash nhẹ, dáng vừa vặn và dễ phối nhiều lớp trong thời tiết mát.",
+    "category": { "$oid": "672000000000000000000004" },
+    "price": 829000,
+    "image": "https://images.unsplash.com/photo-1543076447-215ad9ba6923?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["S", "M", "L", "XL"], "colors": ["Xanh denim", "Đen"], "stock": 9, "isActive": true,
+    "createdAt": { "$date": "2026-11-02T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-02T00:00:00.000Z" }, "__v": 0
+  },
+  {
+    "_id": { "$oid": "67300000000000000000000f" },
+    "name": "Áo khoác Gió City Shell",
+    "description": "Áo khoác gió chống bụi nhẹ với mũ gấp gọn, phù hợp di chuyển hằng ngày.",
+    "category": { "$oid": "672000000000000000000004" },
+    "price": 779000,
+    "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=900&q=85",
+    "images": [], "sizes": ["M", "L", "XL", "XXL"], "colors": ["Đen", "Xám đá", "Xanh navy"], "stock": 15, "isActive": true,
+    "createdAt": { "$date": "2026-11-01T00:00:00.000Z" }, "updatedAt": { "$date": "2026-11-01T00:00:00.000Z" }, "__v": 0
+  }
+]

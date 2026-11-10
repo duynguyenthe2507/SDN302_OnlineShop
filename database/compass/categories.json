@@ -1,0 +1,38 @@
+[
+  {
+    "_id": { "$oid": "672000000000000000000001" },
+    "name": "Áo thun",
+    "description": "Áo thun mặc hằng ngày, chất liệu cotton thoáng mát.",
+    "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "672000000000000000000002" },
+    "name": "Áo sơ mi",
+    "description": "Áo sơ mi phong cách công sở và thường ngày.",
+    "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "672000000000000000000003" },
+    "name": "Quần",
+    "description": "Quần jeans và quần kaki nhiều kiểu dáng.",
+    "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "672000000000000000000004" },
+    "name": "Áo khoác",
+    "description": "Áo khoác nhẹ phù hợp nhiều thời tiết.",
+    "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  }
+]

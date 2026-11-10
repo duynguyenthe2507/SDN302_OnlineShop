@@ -1,0 +1,61 @@
+[
+  {
+    "_id": { "$oid": "675000000000000000000001" },
+    "user": { "$oid": "674000000000000000000002" },
+    "items": [
+      {
+        "product": { "$oid": "673000000000000000000001" },
+        "productName": "Áo thun Basic Cotton",
+        "image": "https://placehold.co/800x800?text=Basic+Cotton",
+        "size": "M",
+        "color": "Trắng",
+        "quantity": 2,
+        "price": 199000
+      },
+      {
+        "product": { "$oid": "673000000000000000000003" },
+        "productName": "Áo sơ mi Oxford",
+        "image": "https://placehold.co/800x800?text=Oxford+Shirt",
+        "size": "L",
+        "color": "Xanh nhạt",
+        "quantity": 1,
+        "price": 429000
+      }
+    ],
+    "name": "Nguyễn Minh Anh",
+    "phone": "0912345678",
+    "address": "Quận 1, Thành phố Hồ Chí Minh",
+    "paymentMethod": "cod",
+    "paymentStatus": "unpaid",
+    "status": "pending",
+    "totalPrice": 827000,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "675000000000000000000002" },
+    "user": { "$oid": "674000000000000000000002" },
+    "items": [
+      {
+        "product": { "$oid": "673000000000000000000004" },
+        "productName": "Quần Jeans Straight Fit",
+        "image": "https://placehold.co/800x800?text=Straight+Jeans",
+        "size": "L",
+        "color": "Xanh denim",
+        "quantity": 1,
+        "price": 599000
+      }
+    ],
+    "name": "Nguyễn Minh Anh",
+    "phone": "0912345678",
+    "address": "Quận 1, Thành phố Hồ Chí Minh",
+    "paymentMethod": "bank",
+    "paymentStatus": "paid",
+    "status": "delivered",
+    "totalPrice": 599000,
+    "createdAt": { "$date": "2026-11-05T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-07T00:00:00.000Z" },
+    "__v": 0
+  }
+]

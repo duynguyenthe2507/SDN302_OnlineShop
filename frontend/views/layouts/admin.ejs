@@ -29,6 +29,9 @@
       <span>Xin chào, <strong><%= admin ? admin.name : 'Admin' %></strong></span>
     </div>
 
+    <% if (error) { %><div class="alert alert-danger m-3"><%= error %></div><% } %>
+    <% if (success) { %><div class="alert alert-success m-3"><%= success %></div><% } %>
+
     <!-- Nội dung trang admin được inject vào đây -->
     <div class="p-4">
       <%- body %>

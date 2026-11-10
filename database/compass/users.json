@@ -1,0 +1,28 @@
+[
+  {
+    "_id": { "$oid": "674000000000000000000001" },
+    "name": "Quản trị viên mẫu",
+    "email": "admin@shop.local",
+    "password": "$2a$12$YuU/Ta/jUpS9iYOQdKddbuFJNEqoo0MvQzjH9ZHLOJDNN2TgU.Us2",
+    "phone": "0900000001",
+    "address": "Hà Nội",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "674000000000000000000002" },
+    "name": "Nguyễn Minh Anh",
+    "email": "minhanh@example.com",
+    "password": "$2a$12$YuU/Ta/jUpS9iYOQdKddbuFJNEqoo0MvQzjH9ZHLOJDNN2TgU.Us2",
+    "phone": "0912345678",
+    "address": "Quận 1, Thành phố Hồ Chí Minh",
+    "role": "user",
+    "isActive": true,
+    "createdAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-11-10T00:00:00.000Z" },
+    "__v": 0
+  }
+]

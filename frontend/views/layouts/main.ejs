@@ -19,6 +19,9 @@
   <!-- ===== HEADER / NAVIGATION ===== -->
   <%- include('../partials/header') %>
 
+  <% if (error) { %><div class="container mt-3"><div class="alert alert-danger alert-dismissible fade show"><%= error %><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div></div><% } %>
+  <% if (success) { %><div class="container mt-3"><div class="alert alert-success alert-dismissible fade show"><%= success %><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div></div><% } %>
+
   <!-- ===== NỘI DUNG TRANG (được inject vào đây) ===== -->
   <main class="container my-4">
     <%- body %>

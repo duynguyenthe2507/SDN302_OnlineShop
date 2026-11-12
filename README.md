@@ -1,71 +1,120 @@
-# Online Shop backend
+# FashionShop · React + Express + MongoDB
 
-Backend Express + MongoDB/Mongoose cho giao diện EJS trong `frontend/views`, đồng thời cung cấp REST API tại `/api`.
+Website bán hàng thời trang phục vụ demo PRJ/SDN. Giao diện đã chuyển từ EJS sang React; Express REST API và nghiệp vụ MongoDB/Mongoose tiếp tục xử lý xác thực, giỏ hàng, tồn kho, đơn hàng và khu vực quản trị.
 
-## Chức năng suy ra từ giao diện
+## Chạy demo tại máy
 
-- Khách hàng: đăng ký, đăng nhập, xem/cập nhật hồ sơ, đổi mật khẩu.
-- Danh mục và sản phẩm: xem danh sách/chi tiết, tìm kiếm, lọc theo danh mục/khoảng giá, sắp xếp, phân trang.
-- Mua hàng: giỏ hàng theo tài khoản, chọn size/màu, đặt hàng với COD/chuyển khoản, xem lịch sử/trạng thái đơn.
-- Quản trị: thống kê dashboard, CRUD sản phẩm và danh mục (xóa mềm), xem/tìm người dùng, khóa/mở tài khoản, xem/cập nhật đơn hàng.
+Yêu cầu Node.js 20.19+ (hoặc 22.12+) và MongoDB đang chạy.
 
-## Cài đặt
-
-Yêu cầu Node.js 18+ và MongoDB 6+.
-
-```sh
+```bash
 npm install
 ```
 
-Sao chép `.env.example` thành `.env`, đặt `MONGODB_URI`, `JWT_SECRET` và `SESSION_SECRET` thành các chuỗi ngẫu nhiên dài, sau đó chạy:
+Tạo `.env` từ `.env.example`, kiểm tra URI MongoDB và secret, sau đó chạy ở thư mục gốc project:
 
-```sh
+```bash
 npm run dev
 ```
 
-Dữ liệu mẫu tương thích MongoDB Compass nằm trong [`database/compass`](database/compass/README.md). Để thêm 10 sản phẩm mẫu vào MongoDB đang chạy (có thể chạy lặp lại an toàn): `node backend/scripts/seedSampleProducts.js`.
+Lệnh này chạy React/Vite và Express song song, tự tìm cổng trống nếu `3000` hoặc `5173` đang bận, rồi mở trình duyệt đến trang chủ. React thường ở `http://localhost:5173`; API mặc định ở `http://localhost:3000/api`. Terminal sẽ in cổng thực tế khi có cổng bị chiếm. Kiểm tra kết nối DB tại `/api/health`.
 
-Website EJS chạy tại `http://localhost:3000`; REST API ở `http://localhost:3000/api`, trạng thái kết nối tại `GET /api/health`. Đăng nhập bằng tài khoản mẫu trong `database/compass/README.md` hoặc đăng ký tài khoản mới. PayOS hiện là **mô phỏng**, không thu tiền thật; bật/tắt bằng `PAYOS_SIMULATION_ENABLED` và tự động vô hiệu hóa khi `NODE_ENV=production`. Để cấp quyền quản trị cho user khác, cập nhật role thủ công trong MongoDB, ví dụ Mongo shell:
+Tài khoản demo (mật khẩu `Demo1234!`):
 
-```js
-db.users.updateOne({ email: "admin@example.com" }, { $set: { role: "admin" } })
+- Admin: `admin@shop.local`
+- Khách hàng: `minhanh@example.com`
+
+Nạp 10 sản phẩm mẫu vào database đang chạy (script upsert, chạy lặp lại được):
+
+```bash
+node backend/scripts/seedSampleProducts.js
 ```
 
-Không có endpoint tự nâng quyền admin. Trước khi triển khai thật, hãy dùng HTTPS, đặt secret riêng, giới hạn CORS vào domain frontend và cấu hình backup MongoDB.
+MongoDB Compass có bộ JSON và hướng dẫn trong [`database/compass/README.md`](database/compass/README.md).
 
-## Thiết kế MongoDB
+## Build và chạy bản production local
 
-| Collection | Nội dung và quan hệ |
-| --- | --- |
-| `users` | Hồ sơ, email unique, mật khẩu bcrypt, role `user/admin`, trạng thái hoạt động. |
-| `categories` | Tên unique, mô tả, trạng thái hoạt động. |
-| `products` | Giá, mô tả, ảnh, kho, sizes/colors, tham chiếu `category`; index tìm kiếm tên và danh mục/ngày tạo. |
-| `carts` | Một giỏ cho mỗi user; items tham chiếu sản phẩm và chứa size/màu/số lượng. |
-| `orders` | User, thông tin giao nhận, trạng thái/thanh toán; items lưu snapshot tên/ảnh/giá lúc đặt và tham chiếu sản phẩm để hoàn kho khi hủy. |
+```bash
+npm run build
+npm start
+```
 
-Giỏ được nhúng theo từng document user-cart vì nó chỉ thuộc một người và thường được đọc/cập nhật cùng nhau. Items đơn hàng lưu snapshot để lịch sử không đổi khi quản trị sửa sản phẩm. Giá tiền dùng Number theo VND nguyên; không lưu tổng giỏ vì giá được tính từ sản phẩm mới nhất.
+Express phục vụ React build trong `frontend/dist` và REST API cùng origin. Build lại sau khi thay đổi giao diện.
 
-## API chính
+## Kịch bản demo bảo vệ
 
-Gửi JSON với `Content-Type: application/json`. Endpoint yêu cầu đăng nhập nhận header `Authorization: Bearer <token>`.
+1. Mở trang chủ, giới thiệu danh mục, sản phẩm mới và giao diện responsive.
+2. Mở cửa hàng; tìm theo tên, lọc danh mục/giá, sắp xếp và phân trang.
+3. Mở chi tiết sản phẩm; chọn size/màu/số lượng rồi thêm vào giỏ.
+4. Đăng nhập tài khoản khách hàng; cập nhật thông tin cá nhân, kiểm tra giỏ và đặt COD.
+5. Đặt đơn PayOS mô phỏng, bấm nút giả lập thành công, mở lịch sử và chi tiết đơn để xem trạng thái thanh toán.
+6. Đăng nhập admin; dashboard, tạo/sửa/ẩn sản phẩm, tải ảnh, quản lý danh mục, cập nhật trạng thái đơn, khóa/mở tài khoản.
+7. Mở MongoDB Compass để trình bày `users`, `categories`, `products`, `carts`, `orders` và các tham chiếu.
 
-| Method | Endpoint | Quyền |
-| --- | --- | --- |
-| POST | `/api/auth/register`, `/api/auth/login` | Công khai |
-| GET | `/api/auth/me`; PATCH `/api/users/me`, `/api/users/me/password` | Đăng nhập |
-| GET | `/api/categories`; GET `/api/products?q=&category=&minPrice=&maxPrice=&sort=&page=&limit=` | Công khai |
-| GET | `/api/products/:id` | Công khai |
-| GET/POST/DELETE | `/api/cart`, `/api/cart/items` | Đăng nhập |
-| PATCH/DELETE | `/api/cart/items/:itemId` | Đăng nhập |
-| POST | `/api/orders`; GET `/api/orders/my`, `/api/orders/my/:id` | Đăng nhập |
-| GET/POST/PATCH/DELETE | `/api/admin/products`, `/api/admin/categories` | Admin |
-| GET | `/api/admin/orders`, `/api/admin/orders/:id`, `/api/admin/users`, `/api/admin/dashboard` | Admin |
-| PATCH | `/api/admin/orders/:id/status`, `/api/admin/users/:id/status` | Admin |
+## Phân chia trách nhiệm
 
-Các API danh sách trả kết quả trong object như `{ products, pagination }`; lỗi trả `{ message }`. API ẩn sản phẩm/danh mục dùng xóa mềm để giữ tham chiếu lịch sử.
+- `frontend/src`: React SPA, định tuyến, biểu mẫu và trải nghiệm người dùng.
+- `backend/src/routes/index.js`: REST API, xác thực JWT, phân quyền và nghiệp vụ.
+- `backend/src/models`: schema Mongoose, ràng buộc và quan hệ dữ liệu.
+- `backend/src/server.js`: kết nối MongoDB và khởi chạy Express.
+- `frontend/dist`: artifact do `npm run build` tạo; không chỉnh tay.
 
-## EJS frontend
+Frontend gửi JWT dạng `Authorization: Bearer <token>`. Admin API yêu cầu role `admin`; backend vẫn kiểm tra quyền, không dựa vào việc ẩn/hiện nút trên giao diện.
 
-Các form EJS gọi trực tiếp tới Express routes, không cần chạy frontend server riêng. Session đăng nhập được lưu trong MongoDB collection `sessions`; ảnh tải trong trang quản trị lưu tại `backend/uploads` và phục vụ dưới `/uploads`.
+## Các chức năng
 
-Luồng quên mật khẩu có màn hình nhưng chưa được bật vì dự án chưa có cấu hình gửi email hoặc cơ chế xác minh đặt lại mật khẩu.
+- Khách: đăng ký/đăng nhập, hồ sơ, đổi mật khẩu, xem và lọc sản phẩm, giỏ hàng, checkout, lịch sử/chi tiết đơn.
+- Catalog: tìm kiếm, lọc danh mục và khoảng giá, sắp xếp, phân trang, chi tiết sản phẩm.
+- Mua hàng: kiểm tra tồn kho, lưu ảnh/tên/giá sản phẩm dạng snapshot trong đơn, COD/chuyển khoản/PayOS mô phỏng.
+- Admin: thống kê, CRUD sản phẩm/danh mục, tải ảnh, tra cứu đơn, cập nhật trạng thái và khóa/mở người dùng.
+- MongoDB collections: `users`, `categories`, `products`, `carts`, `orders`.
+
+## Câu hỏi phản biện và gợi ý trả lời
+
+**1. Vì sao chuyển EJS sang React?**
+React tổ chức giao diện thành component, tái sử dụng header, form, bảng và card; định tuyến phía client giúp chuyển trang mượt. Backend Express vẫn cung cấp API và giữ nghiệp vụ nên UI và dữ liệu tách biệt.
+
+**2. React và Express giao tiếp thế nào?**
+React gọi REST API JSON dưới `/api`. Ở dev, Vite proxy `/api` sang Express; khi build, Express phục vụ file React và API cùng origin. JWT được gửi ở header Bearer.
+
+**3. Quyền admin được bảo vệ ở đâu?**
+Giao diện chặn route admin để trải nghiệm rõ ràng, nhưng ranh giới bảo mật là middleware `authenticate` và `adminOnly` ở backend. Người dùng thường gọi thẳng admin API vẫn nhận 403.
+
+**4. Mật khẩu được lưu ra sao?**
+Mongoose hook băm mật khẩu bằng bcrypt trước khi lưu. API không trả trường password; đăng nhập so sánh mật khẩu nhập với hash.
+
+**5. Vì sao giỏ hàng tách collection còn items đơn hàng là snapshot?**
+Giỏ hàng thuộc một user và thay đổi thường xuyên nên lưu thành document riêng tham chiếu sản phẩm. Đơn hàng cần giữ lịch sử chính xác, nên lưu tên, ảnh, giá, size, màu và số lượng tại thời điểm mua.
+
+**6. Hệ thống hạn chế bán vượt tồn kho thế nào?**
+API kiểm tra tồn kho khi thêm/cập nhật giỏ. Khi checkout, backend giảm tồn kho bằng điều kiện `stock >= quantity`; nếu tạo đơn lỗi, số lượng đã giảm được hoàn lại.
+
+**7. Vì sao giá đơn hàng được tính ở backend?**
+Không tin giá do trình duyệt gửi lên. Backend tải giá hiện tại từ MongoDB, tính tổng và tạo snapshot cho từng dòng hàng.
+
+**8. PayOS đã kết nối cổng thanh toán thật chưa?**
+Chưa. Đây là mô phỏng để trình diễn trạng thái unpaid → paid và mã tham chiếu `SIM-*`; không tạo QR PayOS thật, không gửi webhook và không thu tiền. Tính năng tự tắt ở production.
+
+**9. Đơn hàng có những trạng thái nào?**
+`pending`, `confirmed`, `shipping`, `delivered`, `cancelled`. Admin cập nhật trạng thái; hủy đơn sẽ hoàn tồn kho và đơn đã trả được đánh dấu refunded.
+
+**10. Tại sao MongoDB phù hợp với dự án?**
+Dữ liệu sản phẩm và đơn hàng có trường linh hoạt như size/màu và danh sách items. Mongoose bổ sung schema validation, tham chiếu, index và hook để duy trì quy tắc dữ liệu.
+
+**11. Tìm kiếm và phân trang được thực hiện ở đâu?**
+Frontend gửi query params; API dựng filter/sort/skip/limit trong MongoDB và trả metadata pagination. Không tải toàn bộ catalog về browser.
+
+**12. Nếu sản phẩm bị ẩn sau khi đã bán thì lịch sử thế nào?**
+Sản phẩm và danh mục dùng soft delete qua `isActive=false`. Đơn hàng vẫn giữ snapshot nên lịch sử mua không phụ thuộc tên/giá hiện tại.
+
+**13. Quên mật khẩu đã hoạt động chưa?**
+Chưa có dịch vụ email và cơ chế xác minh danh tính. Giao diện thông báo rõ và không giả lập một quy trình đổi mật khẩu thiếu an toàn.
+
+**14. Ảnh sản phẩm được lưu thế nào?**
+Admin tải file ảnh tối đa 5 MB qua endpoint được bảo vệ, Express lưu trong `backend/uploads` và trả URL. Có thể nhập URL ảnh sẵn có; khi triển khai thật nên dùng object storage.
+
+**15. Hướng phát triển tiếp theo là gì?**
+Tích hợp PayOS thật với tạo payment link và xác minh webhook chữ ký; thêm email đặt lại mật khẩu, lịch sử audit, kiểm thử tự động, phân quyền chi tiết và lưu ảnh cloud.
+
+## Biến môi trường chính
+
+Xem `.env.example`: `PORT`, `VITE_PORT`, `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `CLIENT_ORIGIN`, `PAYOS_SIMULATION_ENABLED`. Không commit `.env` hoặc secret thật. Chỉ bật PayOS mô phỏng ở môi trường demo.

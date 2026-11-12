@@ -2,6 +2,9 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const multer = require('multer');
+const fs = require('node:fs');
+const path = require('node:path');
 const { authenticate, adminOnly } = require('../middleware/auth');
 const User = require('../models/User');
 const Category = require('../models/Category');
@@ -14,6 +17,13 @@ const asyncRoute = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next
 const tokenFor = (user) => jwt.sign({ sub: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
 const publicUser = (user) => ({ id: user.id, name: user.name, email: user.email, phone: user.phone, address: user.address, role: user.role });
 const validId = (id) => mongoose.isValidObjectId(id);
+const uploadDir = path.join(__dirname, '../../uploads');
+fs.mkdirSync(uploadDir, { recursive: true });
+const upload = multer({
+  storage: multer.diskStorage({ destination: uploadDir, filename: (req, file, done) => done(null, `${Date.now()}-${Math.random().toString(36).slice(2)}${path.extname(file.originalname).toLowerCase()}`) }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, done) => file.mimetype.startsWith('image/') ? done(null, true) : done(Object.assign(new Error('Vui lòng tải lên tệp ảnh hợp lệ.'), { status: 400 }))
+});
 
 router.get('/health', (req, res) => res.json({ status: 'ok', database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' }));
 
@@ -144,7 +154,12 @@ router.post('/orders/:id/payos/simulate-success', authenticate, asyncRoute(async
 
 // Admin catalog and order management
 router.use('/admin', authenticate, adminOnly);
+router.post('/admin/uploads', upload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ message: 'Vui lòng chọn ảnh.' });
+  res.status(201).json({ url: `/uploads/${req.file.filename}` });
+});
 router.get('/admin/products', asyncRoute(async (req, res) => res.json({ products: await Product.find().populate('category', 'name').sort({ createdAt: -1 }) })));
+router.get('/admin/products/:id', asyncRoute(async (req, res) => { const product = await Product.findById(req.params.id).populate('category', 'name'); if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm.' }); res.json({ product }); }));
 router.post('/admin/products', asyncRoute(async (req, res) => { const product = await Product.create(req.body); res.status(201).json({ product }); }));
 router.patch('/admin/products/:id', asyncRoute(async (req, res) => { const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm.' }); res.json({ product }); }));
 router.delete('/admin/products/:id', asyncRoute(async (req, res) => { const product = await Product.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true }); if (!product) return res.status(404).json({ message: 'Không tìm thấy sản phẩm.' }); res.json({ message: 'Đã ẩn sản phẩm.' }); }));

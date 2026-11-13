@@ -23,6 +23,8 @@ Tài khoản demo (mật khẩu `Demo1234!`):
 - Admin: `admin@shop.local`
 - Khách hàng: `minhanh@example.com`
 
+Nếu tài khoản admin đã tồn tại nhưng thiếu role hoặc bị khóa (ví dụ do đăng ký trước khi import dữ liệu), chạy `node backend/scripts/grantDemoAdmin.js` để cấp lại quyền admin trong database đang khai báo ở `.env`. Script không đổi mật khẩu tài khoản đã tồn tại; chỉ tạo mới với mật khẩu demo khi chưa có email này.
+
 Nạp 10 sản phẩm mẫu vào database đang chạy (script upsert, chạy lặp lại được):
 
 ```bash

@@ -15,7 +15,37 @@ function AuthProvider({ children }) {
     if (!localStorage.getItem('online-shop-token')) return;
     api('/auth/me').then(({ user: current }) => setUser(current)).catch(() => localStorage.removeItem('online-shop-token')).finally(() => setLoading(false));
   }, []);
-  const value = useMemo(() => ({ user, loading, async login(credentials) { const data = await api('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }); localStorage.setItem('online-shop-token', data.token); setUser(data.user); return data.user; }, async register(fields) { const data = await api('/auth/register', { method: 'POST', body: JSON.stringify(fields) }); localStorage.setItem('online-shop-token', data.token); setUser(data.user); return data.user; }, logout() { localStorage.removeItem('online-shop-token'); setUser(null); } }), [user, loading]);
+  const value = useMemo(() => ({
+    user,
+    loading,
+    async login(credentials) {
+      setLoading(true);
+      try {
+        const data = await api('/auth/login', { method: 'POST', body: JSON.stringify(credentials) });
+        localStorage.setItem('online-shop-token', data.token);
+        setUser(data.user);
+        return data.user;
+      } finally {
+        setLoading(false);
+      }
+    },
+    async register(fields) {
+      setLoading(true);
+      try {
+        const data = await api('/auth/register', { method: 'POST', body: JSON.stringify(fields) });
+        localStorage.setItem('online-shop-token', data.token);
+        setUser(data.user);
+        return data.user;
+      } finally {
+        setLoading(false);
+      }
+    },
+    logout() {
+      localStorage.removeItem('online-shop-token');
+      setUser(null);
+      setLoading(false);
+    }
+  }), [user, loading]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
@@ -103,7 +133,7 @@ function PayosPage(){const {id}=useParams(),[order,setOrder]=useState(null),[err
 
 function ProfilePage(){const {user}=useAuth(),[notice,setNotice]=useState(''),[error,setError]=useState('');async function saveProfile(e){e.preventDefault();try{await api('/users/me',{method:'PATCH',body:JSON.stringify(Object.fromEntries(new FormData(e.currentTarget)))});setNotice('Đã cập nhật thông tin.');setError('')}catch(err){setError(err.message)}}async function changePassword(e){e.preventDefault();setNotice('');setError('');const fields=Object.fromEntries(new FormData(e.currentTarget));if(fields.newPassword!==fields.confirmPassword)return setError('Mật khẩu xác nhận không khớp.');try{await api('/users/me/password',{method:'PATCH',body:JSON.stringify(fields)});setNotice('Đã đổi mật khẩu.');e.currentTarget.reset()}catch(err){setError(err.message)}}return <section className="section-wrap"><div className="section-heading"><div><p className="eyebrow">THÔNG TIN CÁ NHÂN</p><h1>Tài khoản của tôi</h1></div></div><div className="profile-grid"><form className="panel form-stack" onSubmit={saveProfile}><h2>Hồ sơ</h2><Field label="Họ và tên" name="name" defaultValue={user?.name} required/><Field label="Email" name="email" defaultValue={user?.email} disabled/><Field label="Số điện thoại" name="phone" defaultValue={user?.phone}/><label className="field-label">Địa chỉ<textarea name="address" defaultValue={user?.address} rows="3"/></label><button className="button button-dark">Lưu thay đổi</button></form><form className="panel form-stack" onSubmit={changePassword}><h2>Bảo mật</h2><Field label="Mật khẩu hiện tại" name="currentPassword" type="password" required/><Field label="Mật khẩu mới" name="newPassword" type="password" minLength="8" required/><Field label="Xác nhận mật khẩu mới" name="confirmPassword" type="password" minLength="8" required/><button className="button button-dark">Đổi mật khẩu</button><Link to="/order-history">Xem đơn hàng của tôi →</Link></form></div>{notice&&<p className="form-success">{notice}</p>}{error&&<ErrorBox message={error}/>}</section>}
 
-function AdminApp(){const location=useLocation(),navigate=useNavigate(),{logout}=useAuth();const route=location.pathname.replace(/\/$/,'');const active=route.includes('/products')?'products':route.includes('/categories')?'categories':route.includes('/orders')?'orders':route.includes('/users')?'users':'dashboard';return <div className="admin-shell"><aside className="admin-sidebar"><Link className="brand" to="/">FASHION<span>SHOP</span></Link><p>QUẢN TRỊ CỬA HÀNG</p><nav><AdminLink to="/admin/dashboard" active={active==='dashboard'}>▦ Tổng quan</AdminLink><AdminLink to="/admin/products" active={active==='products'}>◫ Sản phẩm</AdminLink><AdminLink to="/admin/categories" active={active==='categories'}>▤ Danh mục</AdminLink><AdminLink to="/admin/orders" active={active==='orders'}>▧ Đơn hàng</AdminLink><AdminLink to="/admin/users" active={active==='users'}>♙ Người dùng</AdminLink></nav><div className="admin-bottom"><Link to="/">← Về cửa hàng</Link><button onClick={()=>{logout();navigate('/')}}>Đăng xuất</button></div></aside><section className="admin-main"><header className="admin-topbar"><div><span className="eyebrow">FASHIONSHOP / QUẢN TRỊ</span><h1>{active==='dashboard'?'Tổng quan':active==='products'?'Quản lý sản phẩm':active==='categories'?'Quản lý danh mục':active==='orders'?'Quản lý đơn hàng':'Quản lý người dùng'}</h1></div><span className="admin-avatar">AD</span></header><Routes><Route path="/admin" element={<Navigate to="/admin/dashboard" replace/>}/><Route path="/admin/dashboard" element={<AdminDashboard/>}/><Route path="/admin/products" element={<AdminProducts/>}/><Route path="/admin/products/new" element={<AdminProductForm/>}/><Route path="/admin/products/:id/edit" element={<AdminProductForm/>}/><Route path="/admin/categories" element={<AdminCategories/>}/><Route path="/admin/orders" element={<AdminOrders/>}/><Route path="/admin/orders/:id" element={<AdminOrderDetail/>}/><Route path="/admin/users" element={<AdminUsers/>}/><Route path="*" element={<NotFound/>}/></Routes></section></div>}
+function AdminApp(){const location=useLocation(),navigate=useNavigate(),{logout}=useAuth();const route=location.pathname.replace(/\/$/,'');const active=route.includes('/products')?'products':route.includes('/categories')?'categories':route.includes('/orders')?'orders':route.includes('/users')?'users':'dashboard';return <div className="admin-shell"><aside className="admin-sidebar"><Link className="brand" to="/">FASHION<span>SHOP</span></Link><p>QUẢN TRỊ CỬA HÀNG</p><nav><AdminLink to="/admin/dashboard" active={active==='dashboard'}>▦ Tổng quan</AdminLink><AdminLink to="/admin/products" active={active==='products'}>◫ Sản phẩm</AdminLink><AdminLink to="/admin/categories" active={active==='categories'}>▤ Danh mục</AdminLink><AdminLink to="/admin/orders" active={active==='orders'}>▧ Đơn hàng</AdminLink><AdminLink to="/admin/users" active={active==='users'}>♙ Người dùng</AdminLink></nav><div className="admin-bottom"><Link to="/">← Về cửa hàng</Link><button onClick={()=>{logout();navigate('/')}}>Đăng xuất</button></div></aside><section className="admin-main"><header className="admin-topbar"><div><span className="eyebrow">FASHIONSHOP / QUẢN TRỊ</span><h1>{active==='dashboard'?'Tổng quan':active==='products'?'Quản lý sản phẩm':active==='categories'?'Quản lý danh mục':active==='orders'?'Quản lý đơn hàng':'Quản lý người dùng'}</h1></div><span className="admin-avatar">AD</span></header><Routes><Route index element={<Navigate to="dashboard" replace/>}/><Route path="dashboard" element={<AdminDashboard/>}/><Route path="products" element={<AdminProducts/>}/><Route path="products/new" element={<AdminProductForm/>}/><Route path="products/:id/edit" element={<AdminProductForm/>}/><Route path="categories" element={<AdminCategories/>}/><Route path="orders" element={<AdminOrders/>}/><Route path="orders/:id" element={<AdminOrderDetail/>}/><Route path="users" element={<AdminUsers/>}/><Route path="*" element={<NotFound/>}/></Routes></section></div>}
 function AdminLink({to,active,children}){return <Link className={active?'active':''} to={to}>{children}</Link>}
 function AdminDashboard(){const [stats,setStats]=useState(null),[error,setError]=useState('');useEffect(()=>{api('/admin/dashboard').then(({stats:s})=>setStats(s)).catch(e=>setError(e.message))},[]);if(error)return <ErrorBox message={error}/>;if(!stats)return <Loading/>;return <div className="admin-content"><div className="stats-grid"><Stat label="Sản phẩm đang bán" value={stats.products} icon="◫"/><Stat label="Tài khoản" value={stats.users} icon="♙"/><Stat label="Đơn hàng" value={stats.orders} icon="▧"/><Stat label="Doanh thu đơn không hủy" value={money(stats.revenue)} icon="↗"/></div><div className="admin-welcome panel"><div><p className="eyebrow">FASHIONSHOP ADMIN</p><h2>Chào mừng quay lại</h2><p>Theo dõi hoạt động cửa hàng và quản lý đơn hàng tại đây.</p></div><div className="quick-links"><Link className="button button-dark" to="/admin/products/new">+ Thêm sản phẩm</Link><Link className="button button-outline" to="/admin/orders">Xem đơn hàng</Link></div></div><div className="admin-shortcuts"><Link to="/admin/products">Quản lý sản phẩm <span>→</span></Link><Link to="/admin/categories">Quản lý danh mục <span>→</span></Link><Link to="/admin/users">Quản lý người dùng <span>→</span></Link></div></div>}
 function Stat({label,value,icon}){return <div className="stat-card"><span>{icon}</span><p>{label}</p><b>{value}</b></div>}
